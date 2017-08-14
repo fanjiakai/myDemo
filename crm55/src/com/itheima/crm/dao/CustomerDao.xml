@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper 
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.itheima.crm.dao.CustomerDao">
+	
+	<!-- Integer findAllNum(); -->
+	<select id="findAllNum" resultType="Integer" parameterType="QueryVo">
+		select count(*) from customer
+		<where>
+			<if test="custName != null and custName != ''">
+				and cust_name like "%"#{custName}"%"
+			</if>
+			<if test="custSource != null and custSource != ''">
+				and cust_source = #{custSource}
+			</if>
+			<if test="custIndustry != null and custIndustry != ''">
+				and cust_industry = #{custIndustry}
+			</if>	
+			<if test="custLevel != null and custLevel != ''">
+				and cust_level = #{custLevel}
+			</if>					
+		</where>
+	</select>
+	
+	
+	<!-- List<Customer> findListByBasedict(QueryVo queryVo); -->
+	<select id="findListByBasedict" parameterType="QueryVo" resultType="Customer">
+		select  c.cust_id,
+				c.cust_name,
+				c.cust_user_id,
+				c.cust_create_id,
+				s.dict_item_name cust_source,
+				i.dict_item_name cust_industry,
+				l.dict_item_name cust_level,
+				c.cust_linkman,
+				c.cust_phone,
+				c.cust_mobile,
+				c.cust_zipcode,
+				c.cust_address,
+				c.cust_createtime
+		from customer c 
+		left join base_dict s on s.dict_id = cust_source
+		left join base_dict i on i.dict_id = cust_industry
+		left join base_dict l on l.dict_id = cust_level
+		<where>
+			<if test="custName != null and custName != ''">
+				and cust_name like "%"#{custName}"%"
+			</if>
+			<if test="custSource != null and custSource != ''">
+				and cust_source = #{custSource}
+			</if>
+			<if test="custIndustry != null and custIndustry != ''">
+				and cust_industry = #{custIndustry}
+			</if>	
+			<if test="custLevel != null and custLevel != ''">
+				and cust_level = #{custLevel}
+			</if>					
+		</where>
+		limit #{start},#{rows}
+	</select>
+	
+	<!-- Customer findCustomerById(Integer id); -->
+	<select id="findCustomerById" resultType="Customer" parameterType="Integer">
+		select * from customer where cust_id = #{v}
+	</select>
+	
+	<!-- void updateCustomerById(Customer customer); -->
+	<update id="updateCustomerById" parameterType="Customer">
+		update customer set 
+			cust_name = #{cust_name},
+			cust_user_id = #{cust_user_id},
+			cust_create_id = #{cust_create_id},
+			cust_source = #{cust_source},
+			cust_industry = #{cust_industry},
+			cust_level = #{cust_level},
+			cust_linkman = #{cust_linkman},
+			cust_phone = #{cust_phone},
+			cust_mobile = #{cust_mobile},
+			cust_zipcode = #{cust_zipcode},
+			cust_address = #{cust_address},
+			cust_createtime = #{cust_createtime}
+		<where>
+			cust_id = #{cust_id}
+		</where>
+	</update>
+	
+		<!-- void deleteCustomerById(Integer id); -->
+	<delete id="deleteCustomerById" parameterType="Integer">
+		delete from customer where cust_id = #{vvv}
+	</delete>
+</mapper>
